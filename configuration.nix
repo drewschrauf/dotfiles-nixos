@@ -1,4 +1,14 @@
-{ config, lib, pkgs, ... }:
+{ lib, pkgs, ... }:
+let
+  nix-alien-pkgs = import (
+    pkgs.fetchFromGitHub {
+      owner = "thiagokokada";
+      repo = "nix-alien";
+      rev = "2d723f26c57213892a1f9641e11b2a09766e8479";
+      sha256 = "11mrb9dy7bcqv04zzzgd406hz3gds4d83rzgvznq27w0c6cvdfcw";
+    }
+  ) {};
+in
 {
   imports = [
     <nixos-wsl/modules>
@@ -14,6 +24,10 @@
   programs.nix-ld.enable = true;
   virtualisation.docker.enable = true;
 
+  environment.systemPackages = with nix-alien-pkgs; [
+    nix-alien
+  ];
+
   users.users.drew = {
     shell = pkgs.zsh;
     extraGroups = [ "docker" ];
@@ -23,10 +37,6 @@
     home.packages = with pkgs; [
       asdf-vm
       bash
-      bat
-      eza
-      lazygit
-      ripgrep
       update-nix-fetchgit
 
       # nvim utilities
@@ -65,13 +75,35 @@
 
     programs.zsh = {
       enable = true;
-      sessionVariables = {
-        NIX_LD_LIBRARY_PATH = lib.makeLibraryPath [
-          pkgs.stdenv.cc.cc
+      localVariables = {
+        NIX_LD_LIBRARY_PATH = with pkgs; lib.makeLibraryPath [
+          stdenv.cc.cc
+
+          # playwright
+          alsa-lib
+          at-spi2-atk
+          cairo
+          cups
+          dbus
+          expat
+          glib
+          libdrm
+          libxkbcommon
+          mesa
+          nspr
+          nss
+          pango
+          xorg.libX11
+          xorg.libXcomposite
+          xorg.libXdamage
+          xorg.libXext
+          xorg.libXfixes
+          xorg.libXrandr
+          xorg.libxcb
+          libudev0-shim
         ];
         NIX_LD = lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker";
-      };
-      localVariables = {
+
         EDITOR = "nvim";
         FZF_DEFAULT_COMMAND = "rg --files --hidden --glob '!.git' --glob '!esy.lock' --glob '!.yarn/cache'";
 
@@ -80,7 +112,6 @@
       shellAliases = {
         n = "nvim";
         tm = "tmux attach || tmux new";
-        ls = "exa";
         cat = "bat";
 
         ta = "terragrunt run-all apply --terragrunt-non-interactive --terragrunt-working-dir";
@@ -145,6 +176,17 @@
         bind '"' split-window -v -c "#{pane_current_path}"
         bind % split-window -h -c "#{pane_current_path}"
       '';
+    };
+
+    programs.ripgrep.enable = true;
+    programs.lazygit.enable = true;
+    programs.bat.enable = true;
+
+    programs.eza = {
+      enable = true;
+      enableAliases = true;
+      icons = true;
+      git = true;
     };
 
     programs.neovim = {
