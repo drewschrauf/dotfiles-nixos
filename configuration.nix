@@ -8,6 +8,7 @@ let
       sha256 = "11mrb9dy7bcqv04zzzgd406hz3gds4d83rzgvznq27w0c6cvdfcw";
     }
   ) {};
+  secrets = import ./secrets.nix;
 in
 {
   imports = [
@@ -55,8 +56,8 @@ in
 
     programs.git = {
       enable = true;
-      userName  = (import ./secrets.nix).userName;
-      userEmail = (import ./secrets.nix).userEmail;
+      userName  = secrets.userName;
+      userEmail = secrets.userEmail;
       aliases = {
         lg = "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
       };
@@ -104,9 +105,7 @@ in
         ];
         NIX_LD = lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker";
 
-        EDITOR = "nvim";
         FZF_DEFAULT_COMMAND = "rg --files --hidden --glob '!.git' --glob '!esy.lock' --glob '!.yarn/cache'";
-
         PATH = "/home/drew/.dotfiles/bin:$PATH";
       };
       shellAliases = {
@@ -191,6 +190,7 @@ in
 
     programs.neovim = {
       enable = true;
+      defaultEditor = true;
     };
 
     home.file.".config/nvim" = {
