@@ -4,8 +4,8 @@ let
     pkgs.fetchFromGitHub {
       owner = "thiagokokada";
       repo = "nix-alien";
-      rev = "2d723f26c57213892a1f9641e11b2a09766e8479";
-      sha256 = "11mrb9dy7bcqv04zzzgd406hz3gds4d83rzgvznq27w0c6cvdfcw";
+      rev = "80ee1d14570b9a316a8cf237be8368a910ed826f";
+      sha256 = "1pkfbkkcwjaqgvvrascdc0yf95n1qx1p2wgjb9w5yh4axhn6wjqn";
     }
   ) {};
   secrets = import ./secrets.nix;
@@ -38,7 +38,13 @@ in
     home.packages = with pkgs; [
       asdf-vm
       bash
+      gcc
+      gnumake
+      python3
+      unzip
       update-nix-fetchgit
+
+      ghostscript
 
       # nvim utilities
       lua-language-server
@@ -107,6 +113,7 @@ in
 
         FZF_DEFAULT_COMMAND = "rg --files --hidden --glob '!.git' --glob '!esy.lock' --glob '!.yarn/cache'";
         PATH = "/home/drew/.dotfiles/bin:$PATH";
+        GS4JS_HOME = "${pkgs.ghostscript}/lib";
       };
       shellAliases = {
         n = "nvim";
@@ -120,6 +127,7 @@ in
       initExtra = ''
         autoload -Uz promptinit && promptinit && prompt pure
         . ${pkgs.asdf-vm}/share/asdf-vm/asdf.sh
+        [ -f ~/.zshrc.local ] && source ~/.zshrc.local
       '';
 
       antidote = {
@@ -197,8 +205,8 @@ in
       source = pkgs.fetchFromGitHub {
         owner = "NvChad";
         repo = "NvChad";
-        rev = "c56f1242dfc9c1fbba71fc3a22448d5d563703e0"; # refs/heads/v2.0
-        sha256 = "0vkk8d9v3x7m7612z8r3nrmwxj25vwbv67wc2vjn0yfahmagf0fy";
+        rev = "fd10af115e0507b3976d78123eda9748fe0e2d29"; # refs/heads/v2.0
+        sha256 = "0ar0yfsnq9i708xxcv3c1y25n7q8xl7mfki62vrva2nz72nyjrzc";
       };
       recursive = true;
     };
