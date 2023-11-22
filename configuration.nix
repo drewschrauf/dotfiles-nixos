@@ -4,8 +4,8 @@ let
     pkgs.fetchFromGitHub {
       owner = "thiagokokada";
       repo = "nix-alien";
-      rev = "80ee1d14570b9a316a8cf237be8368a910ed826f";
-      sha256 = "1pkfbkkcwjaqgvvrascdc0yf95n1qx1p2wgjb9w5yh4axhn6wjqn";
+      rev = "d37ba197c51addb2979a042769c5fd1e2b76412a";
+      sha256 = "16r80gpprj1viwzmam4ikzl0q2rn458wf3ky66v9zyajax7zhw08";
     }
   ) {};
   secrets = import ./secrets.nix;
@@ -21,12 +21,20 @@ in
     defaultUser = "drew";
   };
 
+  system.activationScripts.binbash = {
+    deps = [ "binsh" ];
+    text = ''
+       ln -sfn /bin/sh /bin/bash
+    '';
+  };
+
   programs.zsh.enable = true;
   programs.nix-ld.enable = true;
   virtualisation.docker.enable = true;
 
-  environment.systemPackages = with nix-alien-pkgs; [
+  environment.systemPackages = with pkgs; with nix-alien-pkgs; [
     nix-alien
+    nginx
   ];
 
   users.users.drew = {
@@ -37,14 +45,15 @@ in
   home-manager.users.drew = { pkgs, ... }: {
     home.packages = with pkgs; [
       asdf-vm
-      bash
       gcc
       gnumake
-      python3
       unzip
       update-nix-fetchgit
 
       ghostscript
+      openssl
+      python39
+      mongosh
 
       # nvim utilities
       lua-language-server
@@ -108,10 +117,13 @@ in
           xorg.libXrandr
           xorg.libxcb
           libudev0-shim
+
+          # puppeteer
+          xorg.libxshmfence
         ];
         NIX_LD = lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker";
 
-        FZF_DEFAULT_COMMAND = "rg --files --hidden --glob '!.git' --glob '!esy.lock' --glob '!.yarn/cache'";
+        FZF_DEFAULT_COMMAND = "rg --files --hidden --glob '!.git' --glob '!.yarn/cache'";
         PATH = "/home/drew/.dotfiles/bin:$PATH";
         GS4JS_HOME = "${pkgs.ghostscript}/lib";
       };
@@ -123,6 +135,8 @@ in
         ta = "terragrunt run-all apply --terragrunt-non-interactive --terragrunt-working-dir";
         tp = "terragrunt run-all plan --terragrunt-non-interactive --terragrunt-working-dir";
         tdel = "find . -name '.terra*' -type d -print | xargs rm -rf";
+
+        mongo = "mongosh";
       };
       initExtra = ''
         autoload -Uz promptinit && promptinit && prompt pure
@@ -205,8 +219,8 @@ in
       source = pkgs.fetchFromGitHub {
         owner = "NvChad";
         repo = "NvChad";
-        rev = "fd10af115e0507b3976d78123eda9748fe0e2d29"; # refs/heads/v2.0
-        sha256 = "0ar0yfsnq9i708xxcv3c1y25n7q8xl7mfki62vrva2nz72nyjrzc";
+        rev = "9d37797e6f9856ef25cfa266cff43f764e828827"; # refs/heads/v2.0
+        sha256 = "0a57bswr6w0nmxj1fmvn24w60ibgh1gyqx586qhz1fq5i4jfjva8";
       };
       recursive = true;
     };
@@ -217,7 +231,11 @@ in
     };
 
     home.file.".tool-versions".text = ''
-      nodejs 18.14.1
+      nodejs 20.9.0
+    '';
+
+    home.file.".asdfrc".text = ''
+      legacy_version_file = yes
     '';
 
     home.stateVersion = "23.05";
