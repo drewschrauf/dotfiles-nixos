@@ -6,6 +6,11 @@ parent_path=$(
 	pwd -P
 )
 
+if [ ! -f "$parent_path/../configuration.nix" ]; then
+	echo "configuration.nix doesn't exist"
+	exit 1
+fi
+
 zsh -ic "antidote update"
-update-nix-fetchgit "$parent_path/../configuration.nix"
+find "$parent_path/.." -name '*.nix' -type f -exec update-nix-fetchgit {} \;
 sudo nixos-rebuild -I nixos-config="$parent_path/../configuration.nix" switch --upgrade

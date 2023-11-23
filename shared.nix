@@ -14,7 +14,6 @@ in
   imports = [
     <nixos-wsl/modules>
     <home-manager/nixos>
-    ./local.nix
   ];
 
   wsl = {
@@ -87,35 +86,6 @@ in
     programs.zsh = {
       enable = true;
       localVariables = {
-        NIX_LD_LIBRARY_PATH = with pkgs; lib.makeLibraryPath [
-          stdenv.cc.cc
-
-          # playwright
-          alsa-lib
-          at-spi2-atk
-          cairo
-          cups
-          dbus
-          expat
-          glib
-          libdrm
-          libxkbcommon
-          mesa
-          nspr
-          nss
-          pango
-          xorg.libX11
-          xorg.libXcomposite
-          xorg.libXdamage
-          xorg.libXext
-          xorg.libXfixes
-          xorg.libXrandr
-          xorg.libxcb
-          libudev0-shim
-
-          # puppeteer
-          xorg.libxshmfence
-        ];
         NIX_LD = lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker";
 
         FZF_DEFAULT_COMMAND = "rg --files --hidden --glob '!.git' --glob '!.yarn/cache'";
