@@ -14,6 +14,7 @@ in
   imports = [
     <nixos-wsl/modules>
     <home-manager/nixos>
+    ./local.nix
   ];
 
   wsl = {
@@ -34,7 +35,6 @@ in
 
   environment.systemPackages = with pkgs; with nix-alien-pkgs; [
     nix-alien
-    nginx
   ];
 
   users.users.drew = {
@@ -49,11 +49,6 @@ in
       gnumake
       unzip
       update-nix-fetchgit
-
-      ghostscript
-      openssl
-      python39
-      mongosh
 
       # nvim utilities
       lua-language-server
@@ -131,12 +126,6 @@ in
         n = "nvim";
         tm = "tmux attach || tmux new";
         cat = "bat";
-
-        ta = "terragrunt run-all apply --terragrunt-non-interactive --terragrunt-working-dir";
-        tp = "terragrunt run-all plan --terragrunt-non-interactive --terragrunt-working-dir";
-        tdel = "find . -name '.terra*' -type d -print | xargs rm -rf";
-
-        mongo = "mongosh";
       };
       initExtra = ''
         autoload -Uz promptinit && promptinit && prompt pure
