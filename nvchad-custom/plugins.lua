@@ -48,6 +48,7 @@ local plugins = {
   { "vim-scripts/BufOnly.vim", cmd = "BufOnly" },
   { "romainl/vim-cool", event = "VeryLazy" },
   { "kdheepak/lazygit.nvim", cmd = "LazyGit" },
+  { "tpope/vim-fugitive", event = "VeryLazy" },
   { "tpope/vim-surround", event = "VeryLazy" },
   { "gbprod/yanky.nvim", event = "VeryLazy", opts = {} },
   { "karb94/neoscroll.nvim", event = "VeryLazy", opts = {} },
