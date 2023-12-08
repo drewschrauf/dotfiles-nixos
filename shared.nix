@@ -48,6 +48,7 @@ in
       gnumake
       unzip
       update-nix-fetchgit
+      wget
 
       # nvim utilities
       lua-language-server
@@ -193,12 +194,12 @@ in
       recursive = true;
     };
 
-    home.file.".tool-versions".text = ''
-      nodejs 20.9.0
-    '';
-
     home.file.".asdfrc".text = ''
       legacy_version_file = yes
+    '';
+
+    home.file.".tool-versions".text = ''
+      nodejs 20.9.0
     '';
 
     home.stateVersion = "23.05";
