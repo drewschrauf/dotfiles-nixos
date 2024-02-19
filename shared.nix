@@ -4,8 +4,8 @@ let
     pkgs.fetchFromGitHub {
       owner = "thiagokokada";
       repo = "nix-alien";
-      rev = "7d36757ddef3c2fb1805126e0da9abc9d88060f8";
-      sha256 = "1l0nydwd1ymv6bszrszm59xbgwp2fnz9l1wyv1p5q1spanq4lghp";
+      rev = "d6f007b3cab6cd16e50a0041c542a18793357737";
+      sha256 = "16djxx5fs35arwbsz74z5bdnikc60wzvqiyc50gzgnnz16drvw5q";
     }
   ) {};
   secrets = import ./secrets.nix;
@@ -183,8 +183,8 @@ in
       source = pkgs.fetchFromGitHub {
         owner = "NvChad";
         repo = "NvChad";
-        rev = "c8777040fbda6a656f149877b796d120085cd918"; # refs/heads/v2.0
-        sha256 = "05lz8mm0hskj3ybg2g081hwihvq60i8np5dgprbs346piz18d117";
+        rev = "8aec881517ae9e39990507f3bc7dfebfb38d531a"; # refs/heads/v2.0
+        sha256 = "1wk51ja4338zi9bh4bvcr1wpqfd6rv00sy0wqvm8fcjn5csqh6qq";
       };
       recursive = true;
     };
