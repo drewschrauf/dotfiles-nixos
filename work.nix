@@ -10,6 +10,7 @@
 
   home-manager.users.drew = { pkgs, ... }: {
     home.packages = with pkgs; [
+      awscli
       ghostscript
       openssl
       python39
