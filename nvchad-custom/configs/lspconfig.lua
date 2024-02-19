@@ -11,3 +11,9 @@ for _, lsp in ipairs(servers) do
     capabilities = capabilities,
   }
 end
+
+lspconfig.tsserver.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  cmd_env = { NODE_OPTIONS = "--max-old-space-size=4096" },
+}
