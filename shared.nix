@@ -44,6 +44,7 @@ in
   home-manager.users.drew = { pkgs, ... }: {
     home.packages = with pkgs; [
       asdf-vm
+      fd
       gcc
       gnumake
       unzip
