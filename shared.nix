@@ -102,7 +102,7 @@ in
         n = "nvim";
         tm = "tmux attach || tmux new";
         cat = "bat";
-        chwsp = "cd $(git worktree list | sed 1d | sed 's/^\\([^ ]*\\).*\\[\\(.*\\)\\]$/\\2 (\\1)/' | fzf | sed 's/^.*(\\(.*\\))$/\\1/')";
+        chw = "cd $(git worktree list | sed 1d | sed 's/^\\([^ ]*\\).*\\[\\(.*\\)\\]$/\\2 (\\1)/' | fzf | sed 's/^.*(\\(.*\\))$/\\1/')";
       };
       initExtra = ''
         autoload -Uz promptinit && promptinit && prompt pure
