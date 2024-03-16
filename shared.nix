@@ -168,6 +168,7 @@ in
     programs.ripgrep.enable = true;
     programs.lazygit.enable = true;
     programs.bat.enable = true;
+    programs.direnv.enable = true;
 
     programs.eza = {
       enable = true;
