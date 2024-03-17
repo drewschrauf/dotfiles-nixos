@@ -6,6 +6,7 @@ local plugins = {
       ensure_installed = {
         "hcl",
         "terraform",
+        "gleam",
       },
     },
   },
@@ -45,13 +46,13 @@ local plugins = {
   },
 
   { "christoomey/vim-tmux-navigator", lazy = false },
-  { "vim-scripts/BufOnly.vim", cmd = "BufOnly" },
-  { "romainl/vim-cool", event = "VeryLazy" },
-  { "kdheepak/lazygit.nvim", cmd = "LazyGit" },
-  { "tpope/vim-fugitive", event = "VeryLazy" },
-  { "tpope/vim-surround", event = "VeryLazy" },
-  { "gbprod/yanky.nvim", event = "VeryLazy", opts = {} },
-  { "karb94/neoscroll.nvim", event = "VeryLazy", opts = {} },
+  { "vim-scripts/BufOnly.vim",        cmd = "BufOnly" },
+  { "romainl/vim-cool",               event = "VeryLazy" },
+  { "kdheepak/lazygit.nvim",          cmd = "LazyGit" },
+  { "tpope/vim-fugitive",             event = "VeryLazy" },
+  { "tpope/vim-surround",             event = "VeryLazy" },
+  { "gbprod/yanky.nvim",              event = "VeryLazy", opts = {} },
+  { "karb94/neoscroll.nvim",          event = "VeryLazy", opts = {} },
   {
     "ggandor/leap.nvim",
     lazy = false,

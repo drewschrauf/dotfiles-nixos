@@ -4,26 +4,23 @@ local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 local formatting = null_ls.builtins.formatting
 local lint = null_ls.builtins.diagnostics
 
+local gleam_formatter = {
+  name = "gleam_formatter",
+  method = null_ls.methods.FORMATTING,
+  filetypes = { "gleam" },
+  generator = null_ls.formatter {
+    command = "gleam",
+    args = { "format", "--stdin" },
+    to_stdin = true,
+    from_stderr = true,
+  },
+}
+null_ls.register(gleam_formatter)
+
 local sources = {
   formatting.prettierd,
   formatting.stylua,
-  formatting.rustfmt.with {
-    extra_args = function(params)
-      local Path = require "plenary.path"
-      local cargo_toml = Path:new(params.root .. "/" .. "Cargo.toml")
-
-      if cargo_toml:exists() and cargo_toml:is_file() then
-        for _, line in ipairs(cargo_toml:readlines()) do
-          local edition = line:match [[^edition%s*=%s*%"(%d+)%"]]
-          if edition then
-            return { "--edition=" .. edition }
-          end
-        end
-      end
-      -- default edition when we don't find `Cargo.toml` or the `edition` in it.
-      return { "--edition=2021" }
-    end,
-  },
+  formatting.rustfmt,
   formatting.terraform_fmt.with {
     extra_filetypes = { "hcl" },
   },
