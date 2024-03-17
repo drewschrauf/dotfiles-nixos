@@ -50,6 +50,7 @@ in {
       fd
       gcc
       gnumake
+      jq
       unzip
       update-nix-fetchgit
       wget
@@ -99,13 +100,13 @@ in {
 
         FZF_DEFAULT_COMMAND = "rg --files --hidden --glob '!.git' --glob '!.yarn/cache'";
         PATH = "/home/drew/.dotfiles/bin:$PATH";
-        GS4JS_HOME = "${pkgs.ghostscript}/lib";
       };
       shellAliases = {
         n = "nvim";
         tm = "tmux attach || tmux new";
         cat = "bat";
-        chw = "cd $(git worktree list | sed 1d | sed 's/^\\([^ ]*\\).*\\[\\(.*\\)\\]$/\\2 (\\1)/' | fzf | sed 's/^.*(\\(.*\\))$/\\1/')";
+        yr = "yarn $(cat package.json | jq -r '.scripts | 'keys'[]' | sort -r | fzf --no-sort) $1";
+        chw = "cd $(git worktree list | sed 's/^\\([^ ]*\\).*\\[\\(.*\\)\\]$/\\2 (\\1)/' | fzf | sed 's/^.*(\\(.*\\))$/\\1/')";
       };
       initExtra = ''
         autoload -Uz promptinit && promptinit && prompt pure
