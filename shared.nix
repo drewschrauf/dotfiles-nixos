@@ -1,16 +1,18 @@
-{ lib, pkgs, ... }:
-let
+{
+  lib,
+  pkgs,
+  ...
+}: let
   nix-alien-pkgs = import (
     pkgs.fetchFromGitHub {
       owner = "thiagokokada";
       repo = "nix-alien";
-      rev = "d6f007b3cab6cd16e50a0041c542a18793357737";
-      sha256 = "16djxx5fs35arwbsz74z5bdnikc60wzvqiyc50gzgnnz16drvw5q";
+      rev = "75c0c2d5eb1fdd2c5187c49888cab40b060605fa";
+      sha256 = "1phkcx9nk215hjl34f38nkn2yk63jk2n8hxn8im67qk8jvrwqif3";
     }
   ) {};
   secrets = import ./secrets.nix;
-in
-{
+in {
   imports = [
     <nixos-wsl/modules>
     <home-manager/nixos>
@@ -22,9 +24,9 @@ in
   };
 
   system.activationScripts.binbash = {
-    deps = [ "binsh" ];
+    deps = ["binsh"];
     text = ''
-       ln -sfn /bin/sh /bin/bash
+      ln -sfn /bin/sh /bin/bash
     '';
   };
 
@@ -32,16 +34,17 @@ in
   programs.nix-ld.enable = true;
   virtualisation.docker.enable = true;
 
-  environment.systemPackages = with pkgs; with nix-alien-pkgs; [
+  environment.systemPackages = with pkgs;
+  with nix-alien-pkgs; [
     nix-alien
   ];
 
   users.users.drew = {
     shell = pkgs.zsh;
-    extraGroups = [ "docker" ];
+    extraGroups = ["docker"];
   };
 
-  home-manager.users.drew = { pkgs, ... }: {
+  home-manager.users.drew = {pkgs, ...}: {
     home.packages = with pkgs; [
       asdf-vm
       fd
@@ -63,11 +66,12 @@ in
       shfmt
       shellcheck
       nil
+      alejandra
     ];
 
     programs.git = {
       enable = true;
-      userName  = secrets.userName;
+      userName = secrets.userName;
       userEmail = secrets.userEmail;
       aliases = {
         lg = "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
@@ -75,7 +79,6 @@ in
       delta = {
         enable = true;
         options = {
-          side-by-side = true;
           navigate = true;
         };
       };
@@ -133,11 +136,6 @@ in
       };
     };
 
-    programs.fzf = {
-      enable = true;
-      enableZshIntegration = true;
-    };
-
     programs.tmux = {
       enable = true;
       shortcut = "a";
@@ -165,6 +163,7 @@ in
       '';
     };
 
+    programs.fzf.enable = true;
     programs.ripgrep.enable = true;
     programs.lazygit.enable = true;
     programs.bat.enable = true;
@@ -186,8 +185,8 @@ in
       source = pkgs.fetchFromGitHub {
         owner = "NvChad";
         repo = "NvChad";
-        rev = "13cce81d998630e46b1ad2d60dd10f3013726bb6"; # refs/heads/v2.0
-        sha256 = "1ndazbcqqr38zf4mdfc4yqp3rqkkvr03n58wn3655lxp4g9lggfj";
+        rev = "1a98a451ea6a88a96ce24c3b78b0eeb875b05dbd"; # refs/heads/v2.0
+        sha256 = "1cbdj7930k2gq3laj2r8fy1pgcvb555vwxw0xgy1c2h96z1n1h23";
       };
       recursive = true;
     };

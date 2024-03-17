@@ -28,6 +28,7 @@ local sources = {
     extra_filetypes = { "hcl" },
   },
   formatting.shfmt,
+  formatting.alejandra,
   lint.eslint_d,
   lint.shellcheck,
 }
