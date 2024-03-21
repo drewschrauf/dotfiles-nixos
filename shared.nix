@@ -23,21 +23,21 @@ in {
     defaultUser = "drew";
   };
 
+  environment.systemPackages = with pkgs;
+  with nix-alien-pkgs; [
+    nix-alien
+  ];
+
+  programs.zsh.enable = true;
+  programs.nix-ld.enable = true;
+  virtualisation.docker.enable = true;
+
   system.activationScripts.binbash = {
     deps = ["binsh"];
     text = ''
       ln -sfn /bin/sh /bin/bash
     '';
   };
-
-  programs.zsh.enable = true;
-  programs.nix-ld.enable = true;
-  virtualisation.docker.enable = true;
-
-  environment.systemPackages = with pkgs;
-  with nix-alien-pkgs; [
-    nix-alien
-  ];
 
   users.users.drew = {
     shell = pkgs.zsh;
@@ -50,7 +50,7 @@ in {
       fd
       gcc
       gnumake
-      jq
+      killall
       unzip
       update-nix-fetchgit
       wget
@@ -59,8 +59,6 @@ in {
       lua-language-server
       stylua
       nodePackages.typescript-language-server
-      prettierd
-      eslint_d
       terraform-ls
       rust-analyzer
       nodePackages.bash-language-server
@@ -74,9 +72,6 @@ in {
       enable = true;
       userName = secrets.userName;
       userEmail = secrets.userEmail;
-      aliases = {
-        lg = "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
-      };
       delta = {
         enable = true;
         options = {
@@ -106,7 +101,7 @@ in {
         tm = "tmux attach || tmux new";
         cat = "bat";
         yr = "yarn $(cat package.json | jq -r '.scripts | 'keys'[]' | sort -r | fzf --no-sort) $1";
-        chw = "cd $(git worktree list | sed 's/^\\([^ ]*\\).*\\[\\(.*\\)\\]$/\\2 (\\1)/' | fzf | sed 's/^.*(\\(.*\\))$/\\1/')";
+        gwts = "cd $(git worktree list | sed 's/^\\([^ ]*\\).*\\[\\(.*\\)\\]$/\\2 (\\1)/' | fzf | sed 's/^.*(\\(.*\\))$/\\1/')";
       };
       initExtra = ''
         autoload -Uz promptinit && promptinit && prompt pure
@@ -168,6 +163,7 @@ in {
     programs.ripgrep.enable = true;
     programs.lazygit.enable = true;
     programs.bat.enable = true;
+    programs.jq.enable = true;
     programs.direnv.enable = true;
 
     programs.eza = {
