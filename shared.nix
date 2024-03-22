@@ -183,8 +183,8 @@ in {
       source = pkgs.fetchFromGitHub {
         owner = "NvChad";
         repo = "NvChad";
-        rev = "1a98a451ea6a88a96ce24c3b78b0eeb875b05dbd"; # refs/heads/v2.0
-        sha256 = "1cbdj7930k2gq3laj2r8fy1pgcvb555vwxw0xgy1c2h96z1n1h23";
+        rev = "44a24e2fe5337b09b4a9ed44bdd001e672d99ec9"; # refs/heads/v2.0
+        sha256 = "0w2blllrkkhm3glbmhcddvw8rqx29wqk82wrr4r9chrrvk6zfqy6";
       };
       recursive = true;
     };
