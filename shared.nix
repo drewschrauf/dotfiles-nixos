@@ -165,6 +165,7 @@ in {
     programs.bat.enable = true;
     programs.jq.enable = true;
     programs.direnv.enable = true;
+    programs.btop.enable = true;
 
     programs.eza = {
       enable = true;
