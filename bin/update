@@ -6,9 +6,5 @@ parent_path=$(
 	pwd -P
 )
 
-if [ ! -f "$parent_path/../configuration.nix" ]; then
-	echo "configuration.nix doesn't exist"
-	exit 1
-fi
-
-sudo nixos-rebuild -I nixos-config="$parent_path/../configuration.nix" switch
+pushd "$parent_path/.."
+sudo nixos-rebuild --flake .# switch --override-input secrets /home/drew/.secrets
