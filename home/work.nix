@@ -4,6 +4,7 @@
   ...
 }: {
   home.packages = with pkgs; [
+    asdf-vm
     awscli
     ghostscript
     openssl
@@ -45,6 +46,9 @@
         ];
       GS4JS_HOME = "${pkgs.ghostscript}/lib";
     };
+    initExtra = ''
+      . ${pkgs.asdf-vm}/share/asdf-vm/asdf.sh
+    '';
     shellAliases = {
       ta = "terragrunt run-all apply --terragrunt-non-interactive --terragrunt-working-dir";
       tp = "terragrunt run-all plan --terragrunt-non-interactive --terragrunt-working-dir";
@@ -55,4 +59,12 @@
       mongo = "mongosh";
     };
   };
+
+  home.file.".asdfrc".text = ''
+    legacy_version_file = yes
+  '';
+
+  home.file.".tool-versions".text = ''
+    nodejs 20.9.0
+  '';
 }

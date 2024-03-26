@@ -4,7 +4,6 @@
   ...
 }: {
   home.packages = with pkgs; [
-    asdf-vm
     fd
     gcc
     gnumake
@@ -61,7 +60,6 @@
     };
     initExtra = ''
       autoload -Uz promptinit && promptinit && prompt pure
-      . ${pkgs.asdf-vm}/share/asdf-vm/asdf.sh
       [ -f ~/.zshrc.local ] && source ~/.zshrc.local
     '';
 
@@ -80,7 +78,7 @@
 
         "MichaelAquilina/zsh-you-should-use"
 
-        "zsh-users/zsh-autosuggestions"
+        "zsh-users/zsh-autosuggestions kind:defer"
         "zsh-users/zsh-syntax-highlighting kind:defer"
 
         "sindresorhus/pure kind:fpath"
@@ -149,14 +147,6 @@
     source = ./nvchad-custom;
     recursive = true;
   };
-
-  home.file.".asdfrc".text = ''
-    legacy_version_file = yes
-  '';
-
-  home.file.".tool-versions".text = ''
-    nodejs 20.9.0
-  '';
 
   home.stateVersion = "23.05";
 }
