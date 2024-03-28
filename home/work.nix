@@ -7,6 +7,7 @@
     asdf-vm
     awscli
     ghostscript
+    nginx
     openssl
     python39
     mongosh
