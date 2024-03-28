@@ -6,11 +6,20 @@ parent_path=$(
 	pwd -P
 )
 
-if [ ! -f "$parent_path/../configuration.nix" ]; then
-	echo "configuration.nix doesn't exist"
-	exit 1
-fi
+pushd "$parent_path/.."
 
+echo "==> Upgrading zsh plugins..."
 zsh -ic "antidote update"
-find "$parent_path/.." -name '*.nix' -type f -exec update-nix-fetchgit {} \;
-sudo nixos-rebuild -I nixos-config="$parent_path/../configuration.nix" switch --upgrade
+echo
+
+echo "==> Upgrading fetchgit references..."
+find . -name '*.nix' -type f -exec update-nix-fetchgit {} \;
+echo
+
+echo "==> Upgrading lock file"
+nix flake lock --recreate-lock-file
+echo
+
+echo "==> Rebuilding system"
+. update
+echo

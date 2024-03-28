@@ -18,7 +18,7 @@ local gleam_formatter = {
 null_ls.register(gleam_formatter)
 
 local sources = {
-  formatting.prettier,
+  formatting.prettierd,
   formatting.stylua,
   formatting.rustfmt,
   formatting.terraform_fmt.with {
@@ -26,7 +26,7 @@ local sources = {
   },
   formatting.shfmt,
   formatting.alejandra,
-  lint.eslint,
+  lint.eslint_d,
   lint.shellcheck,
 }
 
