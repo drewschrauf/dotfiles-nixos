@@ -7,4 +7,10 @@ parent_path=$(
 )
 
 pushd "$parent_path/.."
-sudo nixos-rebuild --flake .# switch --override-input secrets /home/drew/.secrets
+
+if [[ -f /home/drew/.secrets/flake.nix ]]; then
+	sudo nixos-rebuild --flake ".#" switch --override-input secrets /home/drew/.secrets
+else
+	echo "==> No secrets present... not applying"
+	sudo nixos-rebuild --flake ".#" switch
+fi

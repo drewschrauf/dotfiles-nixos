@@ -12,14 +12,14 @@ echo "==> Upgrading zsh plugins..."
 zsh -ic "antidote update"
 echo
 
-echo "==> Upgrade fetchgit references..."
+echo "==> Upgrading fetchgit references..."
 find . -name '*.nix' -type f -exec update-nix-fetchgit {} \;
 echo
 
-echo "==> Upgrading OS..."
-sudo nixos-rebuild --flake .# switch --upgrade
+echo "==> Upgrading lock file"
+nix flake lock --recreate-lock-file
 echo
 
-echo "==> Reapplying secrets"
+echo "==> Rebuilding system"
 . update
 echo
