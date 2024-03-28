@@ -23,6 +23,8 @@
     shellcheck
     nil
     alejandra
+    eslint_d
+    prettierd
   ];
 
   programs.git = {
