@@ -58,6 +58,7 @@
       modules =
         sharedModules
         ++ [
+          ./nixos/work.nix
           {
             networking.hostName = "work";
             home-manager.users.drew = import ./home/work.nix;
