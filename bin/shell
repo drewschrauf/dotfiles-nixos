@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if [[ $# -lt 1 ]]; then
+	echo "Package name must be provided:"
+	echo "  shell gleam"
+	exit 1
+fi
+
+nix shell "github:NixOS/nixpkgs/nixos-unstable#$1"
