@@ -49,13 +49,21 @@
     };
     initExtra = ''
       . ${pkgs.asdf-vm}/share/asdf-vm/asdf.sh
+      export RPROMPT='$''\{WORKTREE}'
     '';
     shellAliases = {
       ta = "terragrunt run-all apply --terragrunt-non-interactive --terragrunt-working-dir";
       tp = "terragrunt run-all plan --terragrunt-non-interactive --terragrunt-working-dir";
       tdel = "find . -name '.terra*' -type d -print | xargs rm -rf";
 
-      initq = "cp ../master/.env . && cp ../master/pages/.dev.vars pages && cp ../master/nginx/ssl/* nginx/ssl && cp ../master/tsconfig.json tsconfig.json && GS4JS_HOME=$GS4JS_HOME ./install-all.sh";
+      pk = "pm2 kill";
+      pst = "pm2 start";
+      pl = "pm2 log";
+      pw = "f() { export WORKTREE=$1 };f";
+
+      wtsu = "f() { npx nodemon --ext ts --exec \"yarn test:single-unit $1\" };f";
+
+      initq = "cp ../master/.env . && cp ../master/pages/.dev.vars pages && cp ../master/nginx/ssl/* nginx/ssl && GS4JS_HOME=$GS4JS_HOME ./install-all.sh";
 
       mongo = "mongosh";
     };
