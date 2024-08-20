@@ -52,7 +52,6 @@ local plugins = {
   { "tpope/vim-fugitive",             event = "VeryLazy" },
   { "tpope/vim-surround",             event = "VeryLazy" },
   { "gbprod/yanky.nvim",              event = "VeryLazy", opts = {} },
-  { "karb94/neoscroll.nvim",          event = "VeryLazy", opts = {} },
   {
     "ggandor/leap.nvim",
     lazy = false,
