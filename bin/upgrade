@@ -2,8 +2,8 @@
 set -euo pipefail
 
 parent_path=$(
-	cd "$(dirname "${BASH_SOURCE[0]}")"
-	pwd -P
+  cd "$(dirname "${BASH_SOURCE[0]}")"
+  pwd -P
 )
 
 pushd "$parent_path/.."
@@ -22,4 +22,8 @@ echo
 
 echo "==> Rebuilding system"
 . update
+echo
+
+echo "==> Upgrading neovim plugins"
+nvim --headless "+Lazy! sync" +qa
 echo
