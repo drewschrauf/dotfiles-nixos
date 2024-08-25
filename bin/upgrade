@@ -12,10 +12,6 @@ echo "==> Upgrading zsh plugins..."
 zsh -ic "antidote update"
 echo
 
-echo "==> Upgrading fetchgit references..."
-find . -name '*.nix' -type f -exec update-nix-fetchgit {} \;
-echo
-
 echo "==> Upgrading lock file"
 nix flake lock --recreate-lock-file
 echo

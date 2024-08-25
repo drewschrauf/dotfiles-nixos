@@ -137,17 +137,7 @@
   };
 
   home.file.".config/nvim" = {
-    source = pkgs.fetchFromGitHub {
-      owner = "NvChad";
-      repo = "NvChad";
-      rev = "44a24e2fe5337b09b4a9ed44bdd001e672d99ec9"; # refs/heads/v2.0
-      sha256 = "0w2blllrkkhm3glbmhcddvw8rqx29wqk82wrr4r9chrrvk6zfqy6";
-    };
-    recursive = true;
-  };
-
-  home.file.".config/nvim/lua/custom" = {
-    source = ./nvchad-custom;
+    source = ./nvim;
     recursive = true;
   };
 
