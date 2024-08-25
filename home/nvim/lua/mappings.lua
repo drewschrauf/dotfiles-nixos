@@ -9,6 +9,10 @@ map("n", "<leader>i", "^", { desc = "start of line" })
 map("n", "<leader>a", "$", { desc = "end of line" })
 map("n", "Q", ":qa<CR>", { desc = "quick close" })
 
+map("n", "<leader>df", function()
+  vim.diagnostic.open_float()
+end, { desc = "Show diagnostics under the cursor" })
+
 map("n", "<C-h>", "<cmd>TmuxNavigateLeft<CR>")
 map("n", "<C-l>", "<cmd>TmuxNavigateRight<CR>")
 map("n", "<C-j>", "<cmd>TmuxNavigateUp<CR>")
