@@ -11,6 +11,8 @@ local options = {
     json = { "prettierd" },
     html = { "prettierd" },
     css = { "prettierd" },
+    json = { "prettierd" },
+    jsonc = { "prettierd" },
 
     tf = { "terraform_fmt" },
     hcl = { "terraform_fmt" },
