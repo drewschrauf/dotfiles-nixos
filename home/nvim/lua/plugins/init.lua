@@ -14,7 +14,7 @@ return {
 
   {
     "mfussenegger/nvim-lint",
-    event = { "BufReadPost", "TextChanged" },
+    event = { "BufWritePost", "BufReadPost", "TextChanged" },
     lazy = false,
     config = function()
       require "configs.nvim-lint"
