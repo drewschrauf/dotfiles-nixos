@@ -8,16 +8,16 @@ parent_path=$(
 
 pushd "$parent_path/.."
 
-echo "==> Upgrading zsh plugins..."
-zsh -ic "antidote update"
-echo
-
 echo "==> Upgrading lock file"
 nix flake lock --recreate-lock-file
 echo
 
 echo "==> Rebuilding system"
 . update
+echo
+
+echo "==> Upgrading zsh plugins..."
+zsh -ic "antidote update"
 echo
 
 echo "==> Upgrading neovim plugins"
