@@ -34,7 +34,7 @@ return {
 
   {
     "christoomey/vim-tmux-navigator",
-    lazy = false,
+    event = "VeryLazy",
   },
   { "vim-scripts/BufOnly.vim", cmd = "BufOnly" },
   { "romainl/vim-cool", event = "VeryLazy" },
