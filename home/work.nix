@@ -59,7 +59,7 @@
       pk = "pm2 kill";
       pst = "pm2 start";
       pl = "pm2 log";
-      pw = "f() { export WORKTREE=$1 };f";
+      pw = "export WORKTREE=$(ls ~/Code/qwilr | fzf)";
 
       wtsu = "f() { npx nodemon --ext ts --exec \"yarn test:single-unit $1\" };f";
 
