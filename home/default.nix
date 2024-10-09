@@ -60,6 +60,7 @@
       cat = "bat";
       yr = "yarn $(cat package.json | jq -r '.scripts | 'keys'[]' | sort -r | fzf --no-sort) $1";
       gwts = "cd $(git worktree list | sed 's/^\\([^ ]*\\).*\\[\\(.*\\)\\]$/\\2 (\\1)/' | fzf | sed 's/^.*(\\(.*\\))$/\\1/')";
+      gwtp = "gwtls | fzf -m | sed 's/^\\([^ ]*\\) .*$/\\1/' | xargs -L 1 -t git worktree remove";
     };
     initExtra = ''
       autoload -Uz promptinit && promptinit && prompt pure
