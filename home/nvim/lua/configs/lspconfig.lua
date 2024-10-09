@@ -18,7 +18,7 @@ for _, lsp in ipairs(servers) do
   }
 end
 
-lspconfig.tsserver.setup {
+lspconfig.ts_ls.setup {
   on_init = on_init,
   on_attach = function(client)
     client.server_capabilities.documentFormattingProvider = false
