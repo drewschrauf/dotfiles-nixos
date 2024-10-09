@@ -5,7 +5,7 @@
 }: {
   home.packages = with pkgs; [
     asdf-vm
-    awscli
+    awscli2
     ghostscript
     nginx
     openssl
@@ -40,16 +40,17 @@
           xorg.libXfixes
           xorg.libXrandr
           xorg.libxcb
-          libudev0-shim
+          systemd
 
           # puppeteer
           xorg.libxshmfence
         ];
-      GS4JS_HOME = "${pkgs.ghostscript}/lib";
     };
     initExtra = ''
       . ${pkgs.asdf-vm}/share/asdf-vm/asdf.sh
       export RPROMPT='$''\{WORKTREE}'
+      export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true
+      export GS4JS_HOME=${pkgs.ghostscript}/lib
     '';
     shellAliases = {
       ta = "terragrunt run-all apply --terragrunt-non-interactive --terragrunt-working-dir";
