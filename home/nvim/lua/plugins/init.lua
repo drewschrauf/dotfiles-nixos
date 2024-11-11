@@ -49,4 +49,8 @@ return {
       require("leap").add_default_mappings()
     end,
   },
+  {
+    "Almo7aya/openingh.nvim",
+    cmd = { "OpenInGHRepo", "OpenInGHFile", "OpenInGHFileLines" },
+  },
 }

@@ -33,3 +33,7 @@ map("n", "<C-n>", "<Plug>(YankyCycleForward)")
 map("n", "<C-p>", "<Plug>(YankyCycleBackward)")
 
 map("i", "jj", "<ESC>", { desc = "exit insert mode" })
+
+map("n", "<leader>gr", ":OpenInGHRepo<CR>")
+map("n", "<leader>gf", ":OpenInGHFile<CR>")
+map("v", "<leader>gf", ":OpenInGHFileLines<CR>")
