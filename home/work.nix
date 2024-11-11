@@ -11,6 +11,7 @@
     openssl
     python39
     mongosh
+    zip
   ];
 
   programs.zsh = {
