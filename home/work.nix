@@ -7,6 +7,7 @@
     asdf-vm
     awscli2
     ghostscript
+    kubectl
     nginx
     openssl
     python39
@@ -65,7 +66,7 @@
 
       wtsu = "f() { npx nodemon --ext ts --exec \"yarn test:single-unit $1\" };f";
 
-      initq = "cp ../master/.env . && cp ../master/pages/.dev.vars pages && cp ../master/nginx/ssl/* nginx/ssl && GS4JS_HOME=$GS4JS_HOME ./install-all.sh";
+      initq = "cp ../master/.env . && cp ../master/pages/.dev.vars pages && cp ../master/nginx/ssl/* nginx/ssl && ./install-all.sh";
 
       mongo = "mongosh";
     };

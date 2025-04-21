@@ -37,3 +37,6 @@ map("i", "jj", "<ESC>", { desc = "exit insert mode" })
 map("n", "<leader>gr", ":OpenInGHRepo<CR>")
 map("n", "<leader>gf", ":OpenInGHFile<CR>")
 map("v", "<leader>gf", ":OpenInGHFileLines<CR>")
+
+map("n", "<leader>gn", ":Neogit<CR>")
+map("n", "<leader>gb", ":Gitsigns blame<CR>")

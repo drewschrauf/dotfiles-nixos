@@ -79,6 +79,7 @@
         "ohmyzsh/ohmyzsh path:plugins/yarn"
         "ohmyzsh/ohmyzsh path:plugins/wd"
         "ohmyzsh/ohmyzsh path:plugins/aws"
+        "ohmyzsh/ohmyzsh path:plugins/kubectl"
 
         "MichaelAquilina/zsh-you-should-use"
 
@@ -98,14 +99,16 @@
     baseIndex = 1;
     plugins = with pkgs.tmuxPlugins; [
       vim-tmux-navigator
-      catppuccin
+      {
+        plugin = catppuccin;
+        extraConfig = "set -g @catppuccin_flavour 'mocha'";
+      }
       yank
     ];
     terminal = "tmux-256color";
     extraConfig = ''
       set-option -sa terminal-overrides ",xterm*:Tc"
       set-option -g renumber-windows on
-      set -g @catppuccin_flavour 'mocha'
 
       # Shift Alt vim keys to switch windows
       bind -n M-H previous-window
@@ -114,6 +117,13 @@
       # Open splits at the same path
       bind '"' split-window -v -c "#{pane_current_path}"
       bind % split-window -h -c "#{pane_current_path}"
+
+      # Additional catppuccin setup
+      set -g status-right-length 100
+      set -g status-left-length 100
+      set -g status-left ""
+      set -g status-right "#{E:@catppuccin_status_application}"
+      set -ag status-right "#{E:@catppuccin_status_session}"
     '';
   };
 

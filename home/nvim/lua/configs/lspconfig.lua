@@ -12,7 +12,6 @@ for _, lsp in ipairs(servers) do
     on_init = on_init,
     on_attach = function(client)
       on_attach(client)
-      vim.keymap.del("n", "<leader>sh")
     end,
     capabilities = capabilities,
   }
@@ -24,7 +23,6 @@ lspconfig.ts_ls.setup {
     client.server_capabilities.documentFormattingProvider = false
     client.server_capabilities.documentRangeFormattingProvider = false
     on_attach(client)
-    vim.keymap.del("n", "<leader>sh")
   end,
   capabilities = capabilities,
   cmd_env = { NODE_OPTIONS = "--max-old-space-size=4096" },

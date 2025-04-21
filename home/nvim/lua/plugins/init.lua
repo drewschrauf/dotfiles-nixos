@@ -39,7 +39,24 @@ return {
   { "vim-scripts/BufOnly.vim", cmd = "BufOnly" },
   { "romainl/vim-cool", event = "VeryLazy" },
   { "kdheepak/lazygit.nvim", cmd = "LazyGit" },
-  { "tpope/vim-fugitive", event = "VeryLazy" },
+  {
+    "lewis6991/gitsigns.nvim",
+    opts = {
+      current_line_blame = true,
+      current_line_blame_opts = {
+        delay = 500,
+      },
+    },
+  },
+  {
+    "NeogitOrg/neogit",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "sindrets/diffview.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
+    cmd = "Neogit",
+  },
   { "tpope/vim-surround", event = "VeryLazy" },
   { "gbprod/yanky.nvim", event = "VeryLazy", opts = {} },
   {
@@ -54,10 +71,8 @@ return {
     cmd = { "OpenInGHRepo", "OpenInGHFile", "OpenInGHFileLines" },
   },
   {
-    "MeanderingProgrammer/render-markdown.nvim",
-    ft = "markdown",
-    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
-    opts = {},
+    "github/copilot.vim",
+    event = "VeryLazy",
   },
   {
     "JoosepAlviste/nvim-ts-context-commentstring",
