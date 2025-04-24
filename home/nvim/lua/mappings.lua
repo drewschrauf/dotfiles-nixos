@@ -1,10 +1,6 @@
 require "nvchad.mappings"
 
 vim.keymap.del("n", "<C-n>")
--- vim.keymap.del("n", "<C-h>")
--- vim.keymap.del("n", "<C-l>")
--- vim.keymap.del("n", "<C-j>")
--- vim.keymap.del("n", "<C-k>")
 
 local map = vim.keymap.set
 
@@ -16,11 +12,6 @@ map("n", "Q", ":qa<CR>", { desc = "quick close" })
 map("n", "<leader>df", function()
   vim.diagnostic.open_float()
 end, { desc = "Show diagnostics under the cursor" })
-
--- map("n", "<C-h>", "<cmd>TmuxNavigateLeft<CR>")
--- map("n", "<C-l>", "<cmd>TmuxNavigateRight<CR>")
--- map("n", "<C-j>", "<cmd>TmuxNavigateDown<CR>")
--- map("n", "<C-k>", "<cmd>TmuxNavigateUp<CR>")
 
 map("n", "<leader>tp", ":silent exec '!tmux split-window -h -p 30'<CR>", { desc = "new tmux pane" })
 
