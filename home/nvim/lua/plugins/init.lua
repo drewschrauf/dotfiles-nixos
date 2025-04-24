@@ -38,7 +38,6 @@ return {
   },
   { "vim-scripts/BufOnly.vim", cmd = "BufOnly" },
   { "romainl/vim-cool", event = "VeryLazy" },
-  { "kdheepak/lazygit.nvim", cmd = "LazyGit" },
   {
     "lewis6991/gitsigns.nvim",
     opts = {

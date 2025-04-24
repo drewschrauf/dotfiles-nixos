@@ -16,7 +16,6 @@ end, { desc = "Show diagnostics under the cursor" })
 map("n", "<leader>tp", ":silent exec '!tmux split-window -h -p 30'<CR>", { desc = "new tmux pane" })
 
 map("n", "<leader>o", ":BufOnly<CR>", { desc = "close other buffers" })
-map("n", "<leader>lg", ":LazyGit<CR>", { desc = "open lazygit" })
 
 map("n", "p", "<Plug>(YankyPutAfter)")
 map("n", "P", "<Plug>(YankyPutBefore)")

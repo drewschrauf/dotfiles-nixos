@@ -129,7 +129,6 @@
 
   programs.fzf.enable = true;
   programs.ripgrep.enable = true;
-  programs.lazygit.enable = true;
   programs.bat.enable = true;
   programs.jq.enable = true;
   programs.direnv.enable = true;
