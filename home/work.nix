@@ -10,7 +10,7 @@
     kubectl
     nginx
     openssl
-    python39
+    python3
     mongosh
     zip
   ];
@@ -48,7 +48,7 @@
           xorg.libxshmfence
         ];
     };
-    initExtra = ''
+    initContent = ''
       . ${pkgs.asdf-vm}/share/asdf-vm/asdf.sh
       export RPROMPT='$''\{WORKTREE}'
       export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true

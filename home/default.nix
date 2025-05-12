@@ -7,6 +7,7 @@
     entr
     fd
     gcc
+    gdu
     gnumake
     killall
     unzip
@@ -62,7 +63,7 @@
       gwts = "cd $(git worktree list | sed 's/^\\([^ ]*\\).*\\[\\(.*\\)\\]$/\\2 (\\1)/' | fzf | sed 's/^.*(\\(.*\\))$/\\1/')";
       gwtp = "gwtls | fzf -m | sed 's/^\\([^ ]*\\) .*$/\\1/' | xargs -L 1 -t git worktree remove";
     };
-    initExtra = ''
+    initContent = ''
       autoload -Uz promptinit && promptinit && prompt pure
       [ -f ~/.zshrc.local ] && source ~/.zshrc.local
     '';
