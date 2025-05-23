@@ -30,6 +30,7 @@
           expat
           glib
           libdrm
+          libgbm
           libxkbcommon
           mesa
           nspr
