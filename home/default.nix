@@ -11,7 +11,6 @@
     gnumake
     killall
     unzip
-    update-nix-fetchgit
     wget
 
     # nvim utilities
