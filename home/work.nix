@@ -55,8 +55,8 @@
       export GS4JS_HOME=${pkgs.ghostscript}/lib
     '';
     shellAliases = {
-      ta = "terragrunt run-all apply --terragrunt-non-interactive --terragrunt-working-dir";
-      tp = "terragrunt run-all plan --terragrunt-non-interactive --terragrunt-working-dir";
+      ta = "terragrunt run-all apply --terragrunt-non-interactive --terragrunt-disable-bucket-update --terragrunt-working-dir";
+      tp = "terragrunt run-all plan --terragrunt-non-interactive --terragrunt-disable-bucket-update --terragrunt-working-dir";
       tdel = "find . -name '.terra*' -type d -print | xargs rm -rf";
 
       pk = "pm2 kill";
