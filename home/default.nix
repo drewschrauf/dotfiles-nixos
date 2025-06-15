@@ -14,6 +14,7 @@
     wget
 
     # nvim utilities
+    nodejs
     lua-language-server
     stylua
     nodePackages.typescript-language-server
