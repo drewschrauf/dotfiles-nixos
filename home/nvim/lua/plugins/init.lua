@@ -12,6 +12,8 @@ return {
     end,
   },
 
+  -- { import = "nvchad.blink.lazyspec" },
+
   {
     "mfussenegger/nvim-lint",
     event = { "BufWritePost", "BufReadPost", "TextChanged" },
@@ -70,19 +72,6 @@ return {
     cmd = { "OpenInGHRepo", "OpenInGHFile", "OpenInGHFileLines" },
   },
   {
-    "github/copilot.vim",
-    event = "InsertEnter",
-    config = function()
-      vim.g.copilot_no_tab_map = true
-      vim.keymap.set(
-        "i",
-        "<Right>",
-        [[copilot#GetDisplayedSuggestion().text ==# "" ? "\<Right>" : copilot#Accept("<CR>")]],
-        { expr = true, silent = true, script = true, replace_keycodes = false }
-      )
-    end,
-  },
-  {
     "JoosepAlviste/nvim-ts-context-commentstring",
     event = "VeryLazy",
     opts = {
@@ -96,5 +85,14 @@ return {
           or get_option(filetype, option)
       end
     end,
+  },
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    build = "cd app && yarn install",
+    init = function()
+      vim.g.mkdp_filetypes = { "markdown" }
+    end,
+    ft = { "markdown" },
   },
 }

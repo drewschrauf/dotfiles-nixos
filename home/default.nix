@@ -19,7 +19,6 @@
     stylua
     nodePackages.typescript-language-server
     terraform-ls
-    rust-analyzer
     nodePackages.bash-language-server
     shfmt
     shellcheck
