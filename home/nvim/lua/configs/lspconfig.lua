@@ -1,29 +1,34 @@
-local configs = require "nvchad.configs.lspconfig"
+require("nvchad.configs.lspconfig").defaults()
+local on_attach = require("nvchad.configs.lspconfig").on_attach
 
-local on_attach = configs.on_attach
-local on_init = configs.on_init
-local capabilities = configs.capabilities
+local servers = { "terraformls", "bashls", "nil_ls", "gleam", "ts_ls", "rust_analyzer" }
+vim.lsp.enable(servers)
 
-local lspconfig = require "lspconfig"
-local servers = { "terraformls", "rust_analyzer", "bashls", "nil_ls", "gleam" }
-
-for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
-    on_init = on_init,
-    on_attach = function(client)
-      on_attach(client)
-    end,
-    capabilities = capabilities,
-  }
-end
-
-lspconfig.ts_ls.setup {
-  on_init = on_init,
+vim.lsp.config["ts_ls"] = {
   on_attach = function(client)
     client.server_capabilities.documentFormattingProvider = false
     client.server_capabilities.documentRangeFormattingProvider = false
     on_attach(client)
   end,
-  capabilities = capabilities,
   cmd_env = { NODE_OPTIONS = "--max-old-space-size=4096" },
+}
+
+vim.lsp.config["rust_analyzer"] = {
+  settings = {
+    ["rust-analyzer"] = {
+      procMacro = {
+        ignored = {
+          leptos_macro = {
+            "server",
+          },
+        },
+      },
+      diagnostics = {
+        disabled = { "proc-macro-disabled" },
+      },
+      cargo = {
+        features = { "ssr" },
+      },
+    },
+  },
 }
