@@ -30,15 +30,11 @@
 
   programs.git = {
     enable = true;
-    userName = secrets.name or "";
-    userEmail = secrets.email or "";
-    delta = {
-      enable = true;
-      options = {
-        navigate = true;
+    settings = {
+      user = {
+        name = secrets.name or "";
+        email = secrets.email or "";
       };
-    };
-    extraConfig = {
       init = {
         defaultBranch = "main";
       };
@@ -46,6 +42,14 @@
         rebase = false;
       };
     };
+  };
+
+  programs.delta = {
+    enable = true;
+    options = {
+      navigate = true;
+    };
+    enableGitIntegration = true;
   };
 
   programs.zsh = {
