@@ -10,6 +10,7 @@
     gdu
     gnumake
     killall
+    opencode
     unzip
     wget
 
@@ -26,6 +27,10 @@
     alejandra
     eslint_d
     prettierd
+    lsof
+
+    # opencode utilities
+    ast-grep
   ];
 
   programs.git = {
@@ -44,12 +49,29 @@
     };
   };
 
+  programs.jujutsu = {
+    enable = true;
+    settings = {
+      user = {
+        name = secrets.name or "";
+        email = secrets.email or "";
+      };
+      ui = {
+        default-command = "status";
+      };
+      revset-aliases = {
+        my-heads = "heads(all()) & ~bookmarks() & ~tags() & ~@ & ~ancestors(remote_bookmarks())";
+      };
+    };
+  };
+
   programs.delta = {
     enable = true;
     options = {
       navigate = true;
     };
     enableGitIntegration = true;
+    enableJujutsuIntegration = true;
   };
 
   programs.zsh = {
