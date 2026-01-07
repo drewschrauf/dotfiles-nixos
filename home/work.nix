@@ -6,6 +6,7 @@
   home.packages = with pkgs; [
     asdf-vm
     awscli2
+    docker-compose
     ghostscript
     kubectl
     nginx
@@ -44,14 +45,14 @@
           xorg.libXrandr
           xorg.libxcb
           systemd
+          # libGL
 
           # puppeteer
           xorg.libxshmfence
         ];
     };
     initContent = ''
-      . ${pkgs.asdf-vm}/share/asdf-vm/asdf.sh
-      export RPROMPT='$''\{WORKTREE}'
+      export PATH=$HOME/.asdf/shims:$PATH
       export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true
       export GS4JS_HOME=${pkgs.ghostscript}/lib
     '';
@@ -65,7 +66,7 @@
       pl = "pm2 log";
       pw = "export WORKTREE=$(ls ~/Code/qwilr | fzf)";
 
-      wtsu = "f() { npx nodemon --ext ts --exec \"yarn test:single-unit $1\" };f";
+      wtsu = "f() { npx nodemon --ext ts,tsx --exec \"yarn test:single-unit $1\" };f";
 
       initq = "cp ../master/.env . && cp ../master/pages/.dev.vars pages && cp ../master/nginx/ssl/* nginx/ssl && ./install-all.sh";
 
@@ -78,6 +79,8 @@
   '';
 
   home.file.".tool-versions".text = ''
-    nodejs 20.9.0
+    nodejs 22.17.0
+    terraform 1.13.1
+    terragrunt 0.86.2
   '';
 }
