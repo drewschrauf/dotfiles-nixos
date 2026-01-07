@@ -30,3 +30,11 @@ map("v", "<leader>gf", ":OpenInGHFileLines<CR>")
 
 map("n", "<leader>gn", ":Neogit<CR>")
 map("n", "<leader>gb", ":Gitsigns blame<CR>")
+
+map("n", "<leader>tb", ":NvimTreeResize 50<CR>")
+
+map("n", "<leader>fr", ":Telescope resume<CR>")
+
+map("n", "<leader>tc", ":tabclose<CR>")
+
+
