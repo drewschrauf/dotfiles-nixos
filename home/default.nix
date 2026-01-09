@@ -174,6 +174,12 @@
 
   programs.claude-code = {
     enable = true;
+    settings = {
+      model = "claude-sonnet-4-5-20250929";
+      permissions = {
+        defaultMode = "plan";
+      };
+    };
   };
 
   home.file.".config/nvim" = {
