@@ -172,6 +172,10 @@
     defaultEditor = true;
   };
 
+  programs.claude-code = {
+    enable = true;
+  };
+
   home.file.".config/nvim" = {
     source = ./nvim;
     recursive = true;

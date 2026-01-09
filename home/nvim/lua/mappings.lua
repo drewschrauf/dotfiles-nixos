@@ -36,5 +36,3 @@ map("n", "<leader>tb", ":NvimTreeResize 50<CR>")
 map("n", "<leader>fr", ":Telescope resume<CR>")
 
 map("n", "<leader>tc", ":tabclose<CR>")
-
-

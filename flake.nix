@@ -24,6 +24,10 @@
     sharedModules = [
       ./nixos/default.nix
 
+      {
+        nixpkgs.config.allowUnfree = true;
+      }
+
       nixos-wsl.nixosModules.wsl
       {
         wsl.enable = true;

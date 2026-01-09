@@ -4,15 +4,17 @@
   ...
 }: {
   home.packages = with pkgs; [
-    asdf-vm
     awscli2
     docker-compose
     ghostscript
     kubectl
+    mkcert
     nginx
     openssl
+    pm2
     python3
     mongosh
+    yarn
     zip
   ];
 
@@ -52,7 +54,6 @@
         ];
     };
     initContent = ''
-      export PATH=$HOME/.asdf/shims:$PATH
       export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true
       export GS4JS_HOME=${pkgs.ghostscript}/lib
     '';
@@ -74,13 +75,8 @@
     };
   };
 
-  home.file.".asdfrc".text = ''
-    legacy_version_file = yes
-  '';
-
-  home.file.".tool-versions".text = ''
-    nodejs 22.17.0
-    terraform 1.13.1
-    terragrunt 0.86.2
-  '';
+  programs.mise = {
+    enable = true;
+    enableZshIntegration = true;
+  };
 }
