@@ -61,7 +61,7 @@ return {
   { "tpope/vim-surround", event = "VeryLazy" },
   { "gbprod/yanky.nvim", event = "VeryLazy", opts = {} },
   {
-    "ggandor/leap.nvim",
+    "https://codeberg.org/andyg/leap.nvim",
     lazy = false,
     config = function()
       require("leap").add_default_mappings()
