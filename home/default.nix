@@ -4,6 +4,7 @@
   ...
 }: {
   home.packages = with pkgs; [
+    gh
     entr
     fd
     gcc
@@ -59,9 +60,6 @@
       ui = {
         default-command = "status";
       };
-      revset-aliases = {
-        my-heads = "heads(all()) & ~bookmarks() & ~tags() & ~@ & ~ancestors(remote_bookmarks())";
-      };
     };
   };
 
@@ -82,6 +80,7 @@
     };
     shellAliases = {
       n = "nvim";
+      c = "claude";
       tm = "tmux attach || tmux new";
       cat = "bat";
       yr = "yarn $(cat package.json | jq -r '.scripts | 'keys'[]' | sort -r | fzf --no-sort) $1";
@@ -121,6 +120,7 @@
     enable = true;
     shortcut = "a";
     mouse = true;
+    focusEvents = true;
     keyMode = "vi";
     baseIndex = 1;
     plugins = with pkgs.tmuxPlugins; [
@@ -175,9 +175,44 @@
   programs.claude-code = {
     enable = true;
     settings = {
-      model = "claude-sonnet-4-5-20250929";
       permissions = {
         defaultMode = "plan";
+        allow = [
+          # Read-only bash commands
+          "Bash(find *)"
+          "Bash(grep *)"
+          "Bash(rg *)"
+          "Bash(ls *)"
+          "Bash(cat *)"
+          "Bash(head *)"
+          "Bash(tail *)"
+          "Bash(tree *)"
+          "Bash(wc *)"
+          "Bash(pwd)"
+          "Bash(which *)"
+          "Bash(echo *)"
+
+          # Additional bash commands
+          "Bash(xargs cat *)"
+          "Bash(sed *)"
+          "Bash(ast-grep *)"
+
+          # Git read operations
+          "Bash(git status *)"
+          "Bash(git diff *)"
+          "Bash(git log *)"
+          "Bash(git show *)"
+          "Bash(git branch *)"
+          "Bash(git mv *)"
+
+          # Yarn/npm commands for testing/building
+          "Bash(yarn *)"
+          "Bash(npm run *)"
+
+          # Github operations
+          "Bash(gh pr view)"
+          "Bash(gh pr list)"
+        ];
       };
     };
   };
