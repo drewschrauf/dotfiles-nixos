@@ -174,10 +174,25 @@
 
   programs.claude-code = {
     enable = true;
+    mcpServers = {
+      buildkite = {
+        type = "http";
+        url = "https://mcp.buildkite.com/mcp";
+      };
+      playwright = {
+        command = "npx";
+        args = [
+          "@playwright/mcp@latest"
+        ];
+      };
+    };
     settings = {
       permissions = {
         defaultMode = "plan";
         allow = [
+          # Tools
+          "Web Search"
+
           # Read-only bash commands
           "Bash(find *)"
           "Bash(grep *)"
@@ -212,6 +227,7 @@
           # Github operations
           "Bash(gh pr view)"
           "Bash(gh pr list)"
+          "Bash(gh pr diff)"
         ];
       };
     };
