@@ -2,8 +2,16 @@
   pkgs,
   secrets,
   ...
-}: {
+}: let
+  diffity = pkgs.fetchFromGitHub {
+    owner = "kamranahmedse";
+    repo = "diffity";
+    rev = "a495def6b7058c690b9f047018e442cd0b9b2a71";
+    hash = "sha256-bQ/T3CyaEzjGzqjJCoeYqkrtU460SCOWIpsuYJ2zvNM=";
+  };
+in {
   home.packages = with pkgs; [
+    google-chrome
     gh
     entr
     fd
@@ -19,9 +27,9 @@
     nodejs
     lua-language-server
     stylua
-    nodePackages.typescript-language-server
+    typescript-language-server
     terraform-ls
-    nodePackages.bash-language-server
+    bash-language-server
     shfmt
     shellcheck
     nil
@@ -48,6 +56,7 @@
         rebase = false;
       };
     };
+    signing.format = null;
   };
 
   programs.jujutsu = {
@@ -170,19 +179,33 @@
   programs.neovim = {
     enable = true;
     defaultEditor = true;
+    withRuby = false;
+    withPython3 = false;
   };
 
   programs.claude-code = {
     enable = true;
+    skills =
+      builtins.mapAttrs (name: _: "${diffity}/packages/skills/${name}")
+      (builtins.readDir "${diffity}/packages/skills");
     mcpServers = {
       buildkite = {
         type = "http";
         url = "https://mcp.buildkite.com/mcp";
       };
+      figma = {
+        type = "http";
+        url = "https://mcp.figma.com/mcp";
+      };
       playwright = {
         command = "npx";
         args = [
           "@playwright/mcp@latest"
+          "--ignore-https-errors"
+          "--browser"
+          "chrome"
+          "--executable-path"
+          "${pkgs.google-chrome}/bin/google-chrome-stable"
         ];
       };
     };
