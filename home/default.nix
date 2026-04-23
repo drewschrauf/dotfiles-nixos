@@ -185,6 +185,14 @@ in {
 
   programs.claude-code = {
     enable = true;
+    context = ''
+      ## Plan mode
+
+      When plan mode is active, do not edit, create, or delete any files other
+      than the designated plan file, and do not run any non-read-only tools.
+      Produce a plan, present it for review, and wait for explicit approval
+      before taking any action on the codebase.
+    '';
     skills =
       builtins.mapAttrs (name: _: "${diffity}/packages/skills/${name}")
       (builtins.readDir "${diffity}/packages/skills");
