@@ -57,6 +57,17 @@ return {
       "nvim-telescope/telescope.nvim",
     },
     cmd = "Neogit",
+    config = function()
+      -- Nvim 0.12 rejects passing both `scope` and `buf` to nvim_set_option_value;
+      -- upstream neogit still passes both on 0.11+, causing E474 when the console
+      -- buffer opens (push cred prompts, failing git hooks).
+      local Buffer = require("neogit.lib.buffer")
+      function Buffer:set_buffer_option(name, value)
+        if self.handle ~= nil then
+          vim.api.nvim_set_option_value(name, value, { buf = self.handle })
+        end
+      end
+    end,
   },
   { "tpope/vim-surround", event = "VeryLazy" },
   { "gbprod/yanky.nvim", event = "VeryLazy", opts = {} },
