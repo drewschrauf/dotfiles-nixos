@@ -2,15 +2,15 @@
 set -euo pipefail
 
 parent_path=$(
-	cd "$(dirname "${BASH_SOURCE[0]}")"
-	pwd -P
+  cd "$(dirname "${BASH_SOURCE[0]}")"
+  pwd -P
 )
 
 pushd "$parent_path/.."
 
 if [[ -f /home/drew/.secrets/flake.nix ]]; then
-	sudo nixos-rebuild --flake ".#" switch --override-input secrets /home/drew/.secrets
+  nix run home-manager/master -- switch --override-input secrets /home/drew/.secrets --flake .#drew
 else
-	echo "==> No secrets present... not applying"
-	sudo nixos-rebuild --flake ".#" switch
+  echo "==> No secrets present... not applying"
+  nix run home-manager/master -- switch --flake .#drew
 fi

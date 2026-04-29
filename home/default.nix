@@ -11,7 +11,6 @@
   };
 in {
   home.packages = with pkgs; [
-    google-chrome
     gh
     entr
     fd
@@ -19,9 +18,9 @@ in {
     gdu
     gnumake
     killall
-    opencode
     unzip
     wget
+    wl-clipboard
 
     # nvim utilities
     nodejs
@@ -59,33 +58,19 @@ in {
     signing.format = null;
   };
 
-  programs.jujutsu = {
-    enable = true;
-    settings = {
-      user = {
-        name = secrets.name or "";
-        email = secrets.email or "";
-      };
-      ui = {
-        default-command = "status";
-      };
-    };
-  };
-
   programs.delta = {
     enable = true;
     options = {
       navigate = true;
     };
     enableGitIntegration = true;
-    enableJujutsuIntegration = true;
   };
 
   programs.zsh = {
     enable = true;
     localVariables = {
       FZF_DEFAULT_COMMAND = "rg --files --hidden --glob '!.git' --glob '!.yarn/cache'";
-      PATH = "/home/drew/.dotfiles/bin:$PATH";
+      PATH = "/home/drew/.dotfiles/bin:/home/drew/.local/bin:$PATH";
     };
     shellAliases = {
       n = "nvim";
@@ -144,6 +129,11 @@ in {
     extraConfig = ''
       set-option -sa terminal-overrides ",xterm*:Tc"
       set-option -g renumber-windows on
+      set -g set-clipboard on
+
+      # Mouse-drag-select copies to system clipboard without leaving copy-mode,
+      # so scrollback position is preserved.
+      bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-no-clear "wl-copy"
 
       # Shift Alt vim keys to switch windows
       bind -n M-H previous-window
@@ -205,19 +195,9 @@ in {
         type = "http";
         url = "https://mcp.figma.com/mcp";
       };
-      playwright = {
-        command = "npx";
-        args = [
-          "@playwright/mcp@latest"
-          "--ignore-https-errors"
-          "--browser"
-          "chrome"
-          "--executable-path"
-          "${pkgs.google-chrome}/bin/google-chrome-stable"
-        ];
-      };
     };
     settings = {
+      skipAutoPermissionPrompt = true;
       permissions = {
         defaultMode = "plan";
         allow = [
@@ -270,4 +250,6 @@ in {
   };
 
   home.stateVersion = "23.05";
+
+  news.display = "silent";
 }

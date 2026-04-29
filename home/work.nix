@@ -1,15 +1,10 @@
-{
-  lib,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   home.packages = with pkgs; [
     awscli2
-    docker-compose
     ghostscript
     kubectl
     mkcert
-    nginx
+    nssTools
     openssl
     pm2
     python3
@@ -19,42 +14,7 @@
   ];
 
   programs.zsh = {
-    localVariables = {
-      NIX_LD_LIBRARY_PATH = with pkgs;
-        lib.makeLibraryPath [
-          stdenv.cc.cc
-
-          # playwright
-          alsa-lib
-          at-spi2-atk
-          cairo
-          cups
-          dbus
-          expat
-          glib
-          libdrm
-          libgbm
-          libxkbcommon
-          mesa
-          nspr
-          nss
-          pango
-          libx11
-          libxcomposite
-          libxdamage
-          libxext
-          libxfixes
-          libxrandr
-          libxcb
-          systemd
-          # libGL
-
-          # puppeteer
-          libxshmfence
-        ];
-    };
     initContent = ''
-      export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true
       export GS4JS_HOME=${pkgs.ghostscript}/lib
     '';
     shellAliases = {

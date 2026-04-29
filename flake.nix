@@ -44,6 +44,20 @@
       }
     ];
   in {
+    homeConfigurations.drew = home-manager.lib.homeManagerConfiguration {
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      extraSpecialArgs = {inherit secrets;};
+      modules = [
+        {
+          nixpkgs.config.allowUnfree = true;
+          home.username = "drew";
+          home.homeDirectory = "/home/drew";
+        }
+        ./home/default.nix
+        ./home/work.nix
+      ];
+    };
+
     nixosConfigurations.personal = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = {inherit secrets;};
