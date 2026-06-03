@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
     awscli2
-    ghostscript
+    # ghostscript
     kubectl
     mkcert
     nssTools
@@ -38,5 +38,10 @@
   programs.mise = {
     enable = true;
     enableZshIntegration = true;
+    globalConfig = {
+      settings = {
+        trusted_config_paths = ["~/Code"];
+      };
+    };
   };
 }

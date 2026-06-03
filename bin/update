@@ -9,7 +9,7 @@ parent_path=$(
 pushd "$parent_path/.."
 
 if [[ -f /home/drew/.secrets/flake.nix ]]; then
-  nix run home-manager/master -- switch --override-input secrets /home/drew/.secrets --flake .#drew
+  nix run --extra-experimental-features "nix-command flakes" home-manager/master -- switch --extra-experimental-features "nix-command flakes" --override-input secrets /home/drew/.secrets --flake .#drew
 else
   echo "==> No secrets present... not applying"
   nix run home-manager/master -- switch --flake .#drew

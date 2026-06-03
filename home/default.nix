@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   secrets,
   ...
 }: let
@@ -9,9 +10,26 @@
     rev = "a495def6b7058c690b9f047018e442cd0b9b2a71";
     hash = "sha256-bQ/T3CyaEzjGzqjJCoeYqkrtU460SCOWIpsuYJ2zvNM=";
   };
+
+  mcpServers = {
+    buildkite = {
+      type = "http";
+      url = "https://mcp.buildkite.com/mcp";
+    };
+    figma = {
+      type = "http";
+      url = "https://mcp.figma.com/mcp";
+    };
+    chrome-devtools = {
+      type = "stdio";
+      command = "npx";
+      args = ["-y" "chrome-devtools-mcp@latest"];
+    };
+  };
 in {
   home.packages = with pkgs; [
     gh
+    git-spice
     entr
     fd
     gcc
@@ -20,7 +38,7 @@ in {
     killall
     unzip
     wget
-    wl-clipboard
+    xclip
 
     # nvim utilities
     nodejs
@@ -133,7 +151,7 @@ in {
 
       # Mouse-drag-select copies to system clipboard without leaving copy-mode,
       # so scrollback position is preserved.
-      bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-no-clear "wl-copy"
+      bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-no-clear "xclip -selection clipboard -i"
 
       # Shift Alt vim keys to switch windows
       bind -n M-H previous-window
@@ -186,23 +204,18 @@ in {
     skills =
       builtins.mapAttrs (name: _: "${diffity}/packages/skills/${name}")
       (builtins.readDir "${diffity}/packages/skills");
-    mcpServers = {
-      buildkite = {
-        type = "http";
-        url = "https://mcp.buildkite.com/mcp";
-      };
-      figma = {
-        type = "http";
-        url = "https://mcp.figma.com/mcp";
-      };
-    };
     settings = {
       skipAutoPermissionPrompt = true;
+      voice = {
+        enabled = true;
+        mode = "tap";
+      };
       permissions = {
         defaultMode = "plan";
         allow = [
           # Tools
-          "Web Search"
+          "Web Search(*)"
+          "Fetch(*)"
 
           # Read-only bash commands
           "Bash(find *)"
@@ -234,6 +247,7 @@ in {
           # Yarn/npm commands for testing/building
           "Bash(yarn *)"
           "Bash(npm run *)"
+          "Bash(npm view *)"
 
           # Github operations
           "Bash(gh pr view)"
@@ -248,6 +262,18 @@ in {
     source = ./nvim;
     recursive = true;
   };
+
+  home.activation.claudeMcpServers = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    CLAUDE_JSON="$HOME/.claude.json"
+    NEW_MCP=${lib.escapeShellArg (builtins.toJSON mcpServers)}
+    if [ -f "$CLAUDE_JSON" ]; then
+      tmp=$(mktemp)
+      ${pkgs.jq}/bin/jq --argjson mcp "$NEW_MCP" '.mcpServers = $mcp' "$CLAUDE_JSON" > "$tmp"
+      mv "$tmp" "$CLAUDE_JSON"
+    else
+      printf '{"mcpServers":%s}\n' "$NEW_MCP" > "$CLAUDE_JSON"
+    fi
+  '';
 
   home.stateVersion = "23.05";
 

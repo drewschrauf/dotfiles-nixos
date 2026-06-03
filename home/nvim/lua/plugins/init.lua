@@ -73,10 +73,10 @@ return {
   { "gbprod/yanky.nvim", event = "VeryLazy", opts = {} },
   {
     "https://codeberg.org/andyg/leap.nvim",
-    lazy = false,
-    config = function()
-      require("leap").add_default_mappings()
-    end,
+    keys = {
+      { "s", "<Plug>(leap)", mode = { "n", "x", "o" }, desc = "Leap" },
+      { "S", "<Plug>(leap-from-window)", mode = { "n" }, desc = "Leap from window" },
+    },
   },
   {
     "Almo7aya/openingh.nvim",
