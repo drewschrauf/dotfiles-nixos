@@ -29,7 +29,6 @@
 in {
   home.packages = with pkgs; [
     gh
-    git-spice
     entr
     fd
     gcc

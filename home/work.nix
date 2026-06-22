@@ -4,11 +4,12 @@
     # ghostscript
     kubectl
     mkcert
+    mongosh
     nssTools
     openssl
     pm2
     python3
-    mongosh
+    sqlite
     yarn
     zip
   ];
