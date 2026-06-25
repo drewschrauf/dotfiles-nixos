@@ -16,6 +16,10 @@
       type = "http";
       url = "https://mcp.buildkite.com/mcp";
     };
+    clickup = {
+      type = "http";
+      url = "https://mcp.clickup.com/mcp";
+    };
     figma = {
       type = "http";
       url = "https://mcp.figma.com/mcp";

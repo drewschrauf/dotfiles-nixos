@@ -30,8 +30,6 @@
 
       wtsu = "f() { npx nodemon --ext ts,tsx --exec \"yarn test:single-unit $1\" };f";
 
-      initq = "cp ../master/.env . && cp ../master/pages/.dev.vars pages && cp ../master/nginx/ssl/* nginx/ssl && ./install-all.sh";
-
       mongo = "mongosh";
     };
   };
