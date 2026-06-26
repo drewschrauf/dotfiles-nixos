@@ -30,6 +30,16 @@
       args = ["-y" "chrome-devtools-mcp@latest"];
     };
   };
+
+  # Bundled tmux plugin: surfaces which Claude Code sessions need attention
+  # (status-bar badge + M-i picker). Self-contained under ./tmux-claude-overseer.
+  claudeOverseer = pkgs.tmuxPlugins.mkTmuxPlugin {
+    pluginName = "claude-overseer";
+    version = "0.1.0";
+    src = ./tmux-claude-overseer;
+    rtpFilePath = "claude-overseer.tmux";
+  };
+  overseerScripts = "${claudeOverseer}/share/tmux-plugins/claude-overseer/scripts";
 in {
   home.packages = with pkgs; [
     gh
@@ -145,6 +155,7 @@ in {
         extraConfig = "set -g @catppuccin_flavour 'mocha'";
       }
       yank
+      claudeOverseer
     ];
     terminal = "tmux-256color";
     extraConfig = ''
@@ -170,6 +181,12 @@ in {
       set -g status-left ""
       set -g status-right "#{E:@catppuccin_status_application}"
       set -ag status-right "#{E:@catppuccin_status_session}"
+
+      # Claude session overseer: place the waiting-sessions badge in the bar.
+      # The M-i picker bind + refresh interval come from the claude-overseer
+      # plugin (see ./tmux-claude-overseer); this just positions its status
+      # segment after the catppuccin modules.
+      set -ag status-right "#(${overseerScripts}/status)"
     '';
   };
 
@@ -256,6 +273,65 @@ in {
           "Bash(gh pr view)"
           "Bash(gh pr list)"
           "Bash(gh pr diff)"
+        ];
+      };
+
+      # Stamp the tmux pane with this session's state so the status-bar badge
+      # and the M-i picker (see programs.tmux.extraConfig) can surface which
+      # sessions are churning vs waiting on me. Scripts live in ~/.dotfiles/bin.
+      hooks = {
+        UserPromptSubmit = [
+          {
+            hooks = [
+              {
+                type = "command";
+                command = "${overseerScripts}/state working";
+              }
+            ];
+          }
+        ];
+        # Flip back to "working" after each approved tool call, so a mid-turn
+        # permission prompt doesn't leave the pane stuck on "needs_input".
+        PostToolUse = [
+          {
+            hooks = [
+              {
+                type = "command";
+                command = "${overseerScripts}/state working";
+              }
+            ];
+          }
+        ];
+        Stop = [
+          {
+            hooks = [
+              {
+                type = "command";
+                command = "${overseerScripts}/state needs_input";
+              }
+            ];
+          }
+        ];
+        Notification = [
+          {
+            matcher = "permission_prompt|idle_prompt";
+            hooks = [
+              {
+                type = "command";
+                command = "${overseerScripts}/state needs_input";
+              }
+            ];
+          }
+        ];
+        SessionEnd = [
+          {
+            hooks = [
+              {
+                type = "command";
+                command = "${overseerScripts}/state clear";
+              }
+            ];
+          }
         ];
       };
     };
