@@ -32,9 +32,6 @@ home/
                          nixosConfigurations.personal output.
   nvim/                  Neovim config, symlinked into ~/.config/nvim via
                          home.file.
-  tmux-claude-overseer/  Bundled tmux plugin (built via tmuxPlugins.mkTmuxPlugin
-                         in default.nix) that surfaces which Claude Code
-                         sessions need attention. See "Claude session overseer".
 
 nixos/                   Legacy NixOS-WSL2 modules. See "Legacy WSL bits".
 
@@ -54,34 +51,6 @@ bin/
 
 The only flake output actually applied on this machine is `homeConfigurations.drew`, which is `home/default.nix` + `home/work.nix`.
 
-## Claude session overseer
-
-`home/tmux-claude-overseer/` is a small, self-contained tmux plugin for keeping
-an eye on many concurrent Claude Code sessions across tmux panes. It is built in
-`home/default.nix` with `pkgs.tmuxPlugins.mkTmuxPlugin` and added to
-`programs.tmux.plugins`, so the scripts live in the nix store (not on `$PATH`).
-
-Pieces:
-
-- `scripts/state <working|needs_input|clear>` — stamps the current pane's
-  `@claude_state` user option (keyed off `$TMUX_PANE`; no-ops outside tmux).
-- `scripts/status` — a catppuccin-mocha status-right bubble showing a count of
-  panes waiting on input; silent when none. Placed in `status-right` from
-  `default.nix` (the plugin only owns behaviour, not bar placement).
-- `scripts/menu` — an `fzf` `display-popup` picker (bound to `M-i` by the
-  plugin's `.tmux`) listing Claude panes with a live `capture-pane` preview;
-  Enter jumps to the chosen pane.
-
-State is driven by Claude Code **hooks** declared in
-`programs.claude-code.settings.hooks` (`UserPromptSubmit`/`PostToolUse` →
-`working`, `Stop`/`Notification` → `needs_input`, `SessionEnd` → `clear`), each
-invoking `scripts/state` by its nix-store path.
-
-Editing any of these scripts requires a rebuild (`update`) — the live tmux/hooks
-reference the store path, so changes are not picked up until the plugin is
-rebuilt and `tmux source-file ~/.config/tmux/tmux.conf` is run. Colours are
-hardcoded to the mocha palette to match `@catppuccin_flavour`.
-
 ## Legacy WSL bits
 
 This repo was previously used to run NixOS under WSL2. That setup is dormant — Drew runs Nix on top of Ubuntu now, not as the OS. The following exist only to support the old WSL2 path and are cleanup candidates, but don't remove them without an explicit ask:
@@ -97,7 +66,7 @@ This repo was previously used to run NixOS under WSL2. That setup is dormant —
 - `nixpkgs.config.allowUnfree = true` is set in both flake outputs.
 - `home.stateVersion = "23.05"` — don't bump casually.
 - Secrets (git name/email, etc.) come from `~/.secrets/flake.nix` via `--override-input secrets`. When absent, secrets fall back to empty defaults via the `input-output-hk/empty-flake` input.
-- `claude-code` itself is configured declaratively in `home/default.nix` — plan-mode default, read-only Bash allowlist, MCP servers, `diffity` skills wired from a pinned GitHub fetch, and the session-overseer hooks (see "Claude session overseer"). Prefer changing Claude Code's global config there rather than editing `~/.claude/settings.json` directly.
+- `claude-code` itself is configured declaratively in `home/default.nix` — plan-mode default, read-only Bash allowlist, MCP servers, `diffity` skills wired from a pinned GitHub fetch, and the herdr `SessionStart` hook. Prefer changing Claude Code's global config there rather than editing `~/.claude/settings.json` directly.
 
 ## References
 
