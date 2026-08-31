@@ -5,13 +5,6 @@
   secrets,
   ...
 }: let
-  diffity = pkgs.fetchFromGitHub {
-    owner = "kamranahmedse";
-    repo = "diffity";
-    rev = "a495def6b7058c690b9f047018e442cd0b9b2a71";
-    hash = "sha256-bQ/T3CyaEzjGzqjJCoeYqkrtU460SCOWIpsuYJ2zvNM=";
-  };
-
   mcpServers = {
     buildkite = {
       type = "http";
@@ -24,6 +17,10 @@
     figma = {
       type = "http";
       url = "https://mcp.figma.com/mcp";
+    };
+    linear = {
+      type = "http";
+      url = "https://mcp.linear.app/mcp";
     };
     chrome-devtools = {
       type = "stdio";
@@ -42,6 +39,74 @@
   # favour of a native module option if one lands upstream.
   herdrClaudeDir = "${config.home.homeDirectory}/.local/share/herdr-claude";
   herdrClaudeHook = "${herdrClaudeDir}/hooks/herdr-agent-state.sh";
+
+  # Herdr Navigator plugin, from its prebuilt release. herdr's own `plugin
+  # install` would git-clone + `cargo build`; we skip that by fetching the
+  # release tarball and laying the binary out at the path the manifest's action
+  # commands expect (`./target/release/herdr-navigator`), then registering the
+  # store dir with `herdr plugin link` at activation (herdr won't discover a
+  # plugin from config.toml alone). Prebuilt glibc binary — runs natively on
+  # Ubuntu, no patchelf. Requires herdr >= 0.7.3. Bump version+hash together to
+  # update (grab the tarball sha256 from the GitHub release).
+  herdrNavigator = pkgs.stdenvNoCC.mkDerivation {
+    pname = "herdr-navigator";
+    version = "0.3.2";
+    src = pkgs.fetchurl {
+      url = "https://github.com/thanhdat77/herdr-navigator/releases/download/v0.3.2/herdr-navigator-linux-x86_64.tar.gz";
+      hash = "sha256-2Da73RdiC19Rg8hjxCieG3cfTq4Rm0dyRPEpxNrcW9M=";
+    };
+    sourceRoot = "herdr-navigator";
+    dontConfigure = true;
+    dontBuild = true;
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out/target/release
+      cp herdr-plugin.toml $out/
+      install -m755 herdr-navigator $out/target/release/herdr-navigator
+      runHook postInstall
+    '';
+  };
+
+  # Herdr Reviewr plugin. Unlike navigator, its release tarball ships *only* the
+  # binary — the manifest and the `herdr/*.sh` action scripts live in the repo
+  # source. So we assemble the plugin dir from two pinned sources: the GitHub
+  # source (manifest + scripts) and the prebuilt binary, dropped at the path the
+  # manifest/scripts expect (`$HERDR_PLUGIN_ROOT/bin/herdr-reviewr`). herdr runs
+  # plugin scripts with a minimal PATH and `herdr` isn't in a system dir on this
+  # Nix host, so we prepend the store bins the scripts shell out to (jq/git/herdr
+  # + coreutils). Prebuilt glibc binary — no patchelf. Bump version + all three
+  # hashes together on update (source hash from `nix-prefetch-url --unpack`; the
+  # binary sha256 is in the release's .sha256 sidecar).
+  herdrReviewr = let
+    version = "0.18.1";
+    reviewrBin = pkgs.fetchurl {
+      url = "https://github.com/persiyanov/herdr-reviewr/releases/download/v${version}/herdr-reviewr-x86_64-unknown-linux-gnu.tar.gz";
+      hash = "sha256-JSuB5OugsJeaa0bvUJCfr4jSdTdI2LY8JPg2kHpCXG4=";
+    };
+  in
+    pkgs.stdenvNoCC.mkDerivation {
+      pname = "herdr-reviewr";
+      inherit version;
+      src = pkgs.fetchFromGitHub {
+        owner = "persiyanov";
+        repo = "herdr-reviewr";
+        rev = "v${version}";
+        hash = "sha256-bnUCJyqYLmLjeg4g8Z4r6IDPVQzxaSrmj+F6EBVDuis=";
+      };
+      dontConfigure = true;
+      dontBuild = true;
+      installPhase = ''
+        runHook preInstall
+        mkdir -p $out/bin
+        cp -r herdr-plugin.toml herdr $out/
+        tar xzf ${reviewrBin} -C $out/bin
+        chmod +x $out/bin/herdr-reviewr $out/herdr/*.sh
+        substituteInPlace $out/herdr/sidebar.sh \
+          --replace-fail '/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin' \
+                         '${lib.makeBinPath [pkgs.jq pkgs.git pkgs.herdr pkgs.coreutils pkgs.gnused pkgs.gawk pkgs.gnugrep]}:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin'
+        runHook postInstall
+      '';
+    };
 in {
   home.packages = with pkgs; [
     gh
@@ -191,17 +256,49 @@ in {
       onboarding = false;
       keys.prefix = "ctrl+a";
 
+      # Herdr Navigator plugin actions (plugin itself is built + registered via
+      # the herdrNavigator derivation + herdrNavigatorPlugin activation step).
+      keys.command = [
+        {
+          key = "prefix+t";
+          type = "plugin_action";
+          # open (overlay), not open-side (split): a temporary overlay floats
+          # over the active pane and restores the exact layout on dismiss, rather
+          # than inserting a pane that reflows/squishes the others. With preview
+          # off + compact rows it's just a clean agent list that pops and vanishes.
+          command = "herdr-navigator.open";
+          description = "navigator: agent picker";
+        }
+        # {
+        #   key = "prefix+g";
+        #   type = "plugin_action";
+        #   command = "herdr-navigator.jump-back";
+        #   description = "navigator: jump back";
+        # }
+        {
+          key = "prefix+r";
+          type = "plugin_action";
+          command = "persiyanov.reviewr.toggle";
+          description = "reviewr: toggle diff sidebar";
+        }
+      ];
+
       # herdr already ships the Catppuccin theme by default (`herdr
       # --default-config`: theme.name defaults to "catppuccin", auto_switch
-      # off) — nothing here changes the theme. The catch: herdr has no
-      # own-background option, so it uses the *terminal's* background as its
-      # canvas and draws dividers in Catppuccin surface shades on top. Once
-      # Ghostty also paints the Catppuccin Mocha base (#1e1e2e), those surface
-      # dividers sit on a matching background and vanish. Since the base isn't
-      # ours to repaint, nudge Catppuccin's own surface ramp up one rung so the
-      # dividers clear the base. All values are real Catppuccin Mocha shades
-      # (surface0/1/2 = #313244/#45475a/#585b70); roles confirmed by a
-      # diagnostic pass: surface_dim = sidebar<->content divider + selected row,
+      # off). We pin theme.name explicitly here because plugins that inherit the
+      # herdr theme (herdr-navigator's `inherit_herdr = true`) read *this file*
+      # for a theme name and fall back to a light palette when none is set —
+      # relying on herdr's built-in default isn't enough for them.
+      theme.name = "catppuccin";
+
+      # The catch: herdr has no own-background option, so it uses the
+      # *terminal's* background as its canvas and draws dividers in Catppuccin
+      # surface shades on top. Once Ghostty also paints the Catppuccin Mocha base
+      # (#1e1e2e), those surface dividers sit on a matching background and vanish.
+      # Since the base isn't ours to repaint, nudge Catppuccin's own surface ramp
+      # up one rung so the dividers clear the base. All values are real Catppuccin
+      # Mocha shades (surface0/1/2 = #313244/#45475a/#585b70); roles confirmed by
+      # a diagnostic pass: surface_dim = sidebar<->content divider + selected row,
       # surface0/1 = inter-pane split dividers.
       theme.custom = {
         surface_dim = "#45475a";
@@ -209,6 +306,36 @@ in {
         surface1 = "#585b70";
       };
     };
+  };
+
+  # Narrow herdr-navigator into an agents-only, status-ordered picker. This is
+  # navigator's OWN config file, separate from herdr's config.toml (herdr's
+  # settings never reach it). Managed here so the picker is declarative: only
+  # agents (no workspace/project/dir sources — herdr's prefix+w already covers
+  # those), sorted by status (priority = blocked/error → attention → done →
+  # working → idle), no right-side preview, compact rows. Navigator writes its
+  # own state files (update-check, etc.) as siblings; owning just config.toml as
+  # a symlink is fine. Theme inherits herdr's pinned catppuccin (see above).
+  xdg.configFile."herdr/plugins/config/herdr-navigator/config.toml".source = (pkgs.formats.toml {}).generate "herdr-navigator-config.toml" {
+    picker = {
+      source_order = ["agent"];
+      agent_sort = "priority";
+      preview = false;
+      detailed_rows = false;
+      check_updates = false;
+    };
+    sources = {
+      agents = true;
+      open_workspaces = false;
+      herdr_plus_projects = false;
+      zoxide = false;
+      roots = false;
+      servers = false;
+      sessions = false;
+      herdr_plus_quick_actions = false;
+    };
+    jump_back.enabled = false;
+    theme.inherit_herdr = true;
   };
 
   programs.fzf.enable = true;
@@ -242,9 +369,6 @@ in {
       Produce a plan, present it for review, and wait for explicit approval
       before taking any action on the codebase.
     '';
-    skills =
-      builtins.mapAttrs (name: _: "${diffity}/packages/skills/${name}")
-      (builtins.readDir "${diffity}/packages/skills");
     settings = {
       skipAutoPermissionPrompt = true;
       voice = {
@@ -329,6 +453,22 @@ in {
     mkdir -p ${lib.escapeShellArg herdrClaudeDir}
     CLAUDE_CONFIG_DIR=${lib.escapeShellArg herdrClaudeDir} \
       ${pkgs.herdr}/bin/herdr integration install claude
+  '';
+
+  # Register the Navigator plugin with herdr from its Nix store path. Re-linked
+  # on every activation so it tracks the current store path; failures are
+  # ignored so activation still succeeds if herdr can't link (e.g. < 0.7.3).
+  # The store path is retained by this generation, so it won't be GC'd.
+  home.activation.herdrNavigatorPlugin = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    ${pkgs.herdr}/bin/herdr plugin unlink herdr-navigator >/dev/null 2>&1 || true
+    ${pkgs.herdr}/bin/herdr plugin link ${herdrNavigator} >/dev/null 2>&1 || true
+  '';
+
+  # Same link-at-activation pattern as the navigator plugin above; reviewr's
+  # plugin id is persiyanov.reviewr (see its manifest).
+  home.activation.herdrReviewrPlugin = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    ${pkgs.herdr}/bin/herdr plugin unlink persiyanov.reviewr >/dev/null 2>&1 || true
+    ${pkgs.herdr}/bin/herdr plugin link ${herdrReviewr} >/dev/null 2>&1 || true
   '';
 
   home.activation.claudeMcpServers = lib.hm.dag.entryAfter ["writeBoundary"] ''

@@ -66,7 +66,7 @@ This repo was previously used to run NixOS under WSL2. That setup is dormant —
 - `nixpkgs.config.allowUnfree = true` is set in both flake outputs.
 - `home.stateVersion = "23.05"` — don't bump casually.
 - Secrets (git name/email, etc.) come from `~/.secrets/flake.nix` via `--override-input secrets`. When absent, secrets fall back to empty defaults via the `input-output-hk/empty-flake` input.
-- `claude-code` itself is configured declaratively in `home/default.nix` — plan-mode default, read-only Bash allowlist, MCP servers, `diffity` skills wired from a pinned GitHub fetch, and the herdr `SessionStart` hook. Prefer changing Claude Code's global config there rather than editing `~/.claude/settings.json` directly.
+- `claude-code` itself is configured declaratively in `home/default.nix` — plan-mode default, read-only Bash allowlist, MCP servers, and the herdr `SessionStart` hook. Work-specific Claude config (the private `qwilr/agent-skills` plugin marketplace) lives in `home/work.nix`; the two `programs.claude-code.settings` blocks merge. Prefer changing Claude Code's config there rather than editing `~/.claude/settings.json` directly.
 
 ## References
 
