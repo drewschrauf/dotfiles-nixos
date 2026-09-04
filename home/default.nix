@@ -22,11 +22,6 @@
       type = "http";
       url = "https://mcp.linear.app/mcp";
     };
-    chrome-devtools = {
-      type = "stdio";
-      command = "npx";
-      args = ["-y" "chrome-devtools-mcp@latest"];
-    };
   };
 
   # Herdr <-> Claude Code integration. `herdr integration install claude` drops
@@ -166,6 +161,10 @@ in {
 
   programs.zsh = {
     enable = true;
+    # compinit is driven by ez-compinit (see antidote plugins below); letting
+    # home-manager emit its own `autoload -U compinit` would re-autoload the real
+    # function over ez-compinit's wrapper and drop the queued compdef calls.
+    completionInit = "";
     localVariables = {
       FZF_DEFAULT_COMMAND = "rg --files --hidden --glob '!.git' --glob '!.yarn/cache'";
       PATH = "/home/drew/.dotfiles/bin:/home/drew/.local/bin:$PATH";
@@ -179,14 +178,26 @@ in {
       gwts = "cd $(git worktree list | sed 's/^\\([^ ]*\\).*\\[\\(.*\\)\\]$/\\2 (\\1)/' | fzf | sed 's/^.*(\\(.*\\))$/\\1/')";
       gwtp = "gwtls | fzf -m | sed 's/^\\([^ ]*\\) .*$/\\1/' | xargs -L 1 -t git worktree remove";
     };
-    initContent = ''
-      autoload -Uz promptinit && promptinit && prompt pure
-      [ -f ~/.zshrc.local ] && source ~/.zshrc.local
-    '';
+    initContent = lib.mkMerge [
+      # Order 545 lands between localVariables (540) and the antidote block (550).
+      # ohmyzsh's lib/completion.zsh owns completion styling; ez-compinit is here
+      # only to fix the compinit/compdef ordering.
+      (lib.mkOrder 545 ''
+        zstyle ':plugin:ez-compinit' 'compstyle' 'off'
+      '')
+      ''
+        autoload -Uz promptinit && promptinit && prompt pure
+        [ -f ~/.zshrc.local ] && source ~/.zshrc.local
+      ''
+    ];
 
     antidote = {
       enable = true;
       plugins = [
+        # Must come first: stubs compdef so plugins sourced below can call it
+        # before the real compinit runs on the first precmd.
+        "mattmc3/ez-compinit"
+
         "ohmyzsh/ohmyzsh path:lib/history.zsh"
         "ohmyzsh/ohmyzsh path:lib/completion.zsh"
         "ohmyzsh/ohmyzsh path:lib/git.zsh"
@@ -196,7 +207,6 @@ in {
         "ohmyzsh/ohmyzsh path:plugins/yarn"
         "ohmyzsh/ohmyzsh path:plugins/wd"
         "ohmyzsh/ohmyzsh path:plugins/aws"
-        "ohmyzsh/ohmyzsh path:plugins/kubectl"
 
         "MichaelAquilina/zsh-you-should-use"
 
@@ -368,6 +378,12 @@ in {
       than the designated plan file, and do not run any non-read-only tools.
       Produce a plan, present it for review, and wait for explicit approval
       before taking any action on the codebase.
+
+      ## Shell commands
+
+      Quote any argument that contains a glob character and is not meant for
+      the shell to expand: `--include='*.nix'`. zsh fails the whole command
+      when a glob matches nothing.
     '';
     settings = {
       skipAutoPermissionPrompt = true;
